@@ -190,7 +190,7 @@ let records = [
     country: "Canada",
     communities: [
       {
-        communite: "Austin",
+        communite: "NewYork",
         childs: [
           {
             id: 1,
@@ -263,7 +263,7 @@ let records = [
         ]
       },
       {
-        communite: "Houston",
+        communite: "Washigton",
         childs: [
           {
             id: 1,
@@ -341,80 +341,7 @@ let records = [
     country: "France",
     communities: [
       {
-        communite: "Austin",
-        childs: [
-          {
-            id: 1,
-            childName: "wqdqw",
-            gender: "wqdqwd",
-            birth: "wqdqwd",
-            weight: "wqdqwd",
-            height: "wdqwd",
-            countryScreening: "wdqqwd",
-            dateOfScreening: "dqwd",
-            community: "qdqwd",
-            parentName: "qdwqdw",
-            phoneNo: "qdqdq",
-            country: "qdwqwd",
-            state: "qwdqwd",
-            city: "qwdqd",
-            street: "qwdqwd"
-          },
-          {
-            id: 2,
-            childName: "wqdqw",
-            gender: "wqdqwd",
-            birth: "wqdqwd",
-            weight: "wqdqwd",
-            height: "wdqwd",
-            countryScreening: "wdqqwd",
-            dateOfScreening: "dqwd",
-            community: "qdqwd",
-            parentName: "qdwqdw",
-            phoneNo: "qdqdq",
-            country: "qdwqwd",
-            state: "qwdqwd",
-            city: "qwdqd",
-            street: "qwdqwd"
-          },
-          {
-            id: 3,
-            childName: "wqdqw",
-            gender: "wqdqwd",
-            birth: "wqdqwd",
-            weight: "wqdqwd",
-            height: "wdqwd",
-            countryScreening: "wdqqwd",
-            dateOfScreening: "dqwd",
-            community: "qdqwd",
-            parentName: "qdwqdw",
-            phoneNo: "qdqdq",
-            country: "qdwqwd",
-            state: "qwdqwd",
-            city: "qwdqd",
-            street: "qwdqwd"
-          },
-          {
-            id: 4,
-            childName: "wqdqw",
-            gender: "wqdqwd",
-            birth: "wqdqwd",
-            weight: "wqdqwd",
-            height: "wdqwd",
-            countryScreening: "wdqqwd",
-            dateOfScreening: "dqwd",
-            community: "qdqwd",
-            parentName: "qdwqdw",
-            phoneNo: "qdqdq",
-            country: "qdwqwd",
-            state: "qwdqwd",
-            city: "qwdqd",
-            street: "qwdqwd"
-          }
-        ]
-      },
-      {
-        communite: "Houston",
+        communite: "Paris",
         childs: [
           {
             id: 1,
@@ -520,7 +447,7 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-app.get("/api/userpage/:username", authenticator, (req, res) => {
+app.get("/api/:username", authenticator, (req, res) => {
   const friend = users.find(f => f.username == req.params.username);
 
   if (friend) {
@@ -530,13 +457,23 @@ app.get("/api/userpage/:username", authenticator, (req, res) => {
   }
 });
 
+// All users
+app.get("/api/:id", authenticator, (req, res) => {
+  const country = records.find(record => record.country == req.params.country);
+  if (country) {
+    res.status(200).json(users);
+  } else {
+    res.status(404).send(users);
+  }
+});
+
 // SignUp
 app.post("/api/signup", (req, res) => {
-  // if (req.body.username !== undefined && req.body.password !== undefined) {
-  const newuser = req.body;
-  newuser.id = nextUserId;
-  users.push(newuser);
-  // }
+  if (req.body.username !== undefined && req.body.password !== undefined) {
+    const newuser = req.body;
+    newuser.id = nextUserId;
+    users.push(newuser);
+  }
   nextUserId = nextUserId + 1;
   res.status(201).json(users);
 });
@@ -544,7 +481,7 @@ app.post("/api/signup", (req, res) => {
 // End SignUp
 
 // All Countries Fetch
-app.get("/api/countries", authenticator, (req, res) => {
+app.get("/api/allcountries", authenticator, (req, res) => {
   res.send(records);
 });
 
@@ -557,43 +494,6 @@ app.get("/api/countries/:country", authenticator, (req, res) => {
     res.status(404).send({ msg: "country not found" });
   }
 });
-app.get("/api/colors", authenticator, (req, res) => {
-  res.send(colors);
-});
-
-app.post("/api/colors", authenticator, (req, res) => {
-  if (req.body.color !== undefined && req.body.code !== undefined) {
-    const newcolor = req.body;
-    newcolor.id = nextId;
-    colors.push(newcolor);
-  }
-  nextId = nextId + 1;
-  res.status(201).json(colors);
-});
-
-app.put("/api/colors/:id", authenticator, (req, res) => {
-  if (!req.params.id)
-    res.status(400).send("Your request is missing the color id");
-  if (req.body.id === undefined || !req.body.color || !req.body.code) {
-    res
-      .status(422)
-      .send("Make sure your request body has all the fields it needs");
-  }
-  colors = colors.map(color => {
-    if (`${color.id}` === req.params.id) {
-      return req.body;
-    }
-    return color;
-  });
-  res.status(200).send(req.body);
-});
-
-app.delete("/api/colors/:id", authenticator, (req, res) => {
-  if (!req.params.id)
-    res.status(400).send("Your request is missing the color id");
-  colors = colors.filter(color => `${color.id}` !== req.params.id);
-  res.status(202).send(req.params.id);
-});
 
 app.get("/", function(req, res) {
   res.send("App is working 👍");
@@ -601,4 +501,42 @@ app.get("/", function(req, res) {
 
 app.listen(5000, () => {
   console.log("Server listening on port 5000");
+});
+
+// Create Country
+app.post("/api/createcountry", (req, res) => {
+  const country = req.body;
+  if (req.body.country !== undefined) records.push(country);
+  res.status(201).json(records);
+});
+
+//  Create new Community
+app.post("/api/:country/createcommunity", (req, res) => {
+  const community = req.body;
+
+  records.map((record, index) => {
+    if (record.country == req.params.country)
+      record.communities.push(community);
+  });
+  res.status(201).json(records);
+});
+
+// Edite User
+app.put("/api/user/:id", authenticator, (req, res) => {
+  if (!req.params.id)
+    res.status(400).send("Your request is missing the color id");
+  users = users.map(user => {
+    if (`${user.id}` === req.params.id) {
+      return req.body;
+    }
+    return user;
+  });
+  res.status(200).send(users);
+});
+
+app.delete("/api/user/:id", authenticator, (req, res) => {
+  if (!req.params.id)
+    res.status(400).send("Your request is missing the color id");
+  users = users.filter(user => `${user.id}` !== req.params.id);
+  res.status(202).send(users);
 });
