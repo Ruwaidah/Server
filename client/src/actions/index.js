@@ -64,6 +64,7 @@ export const userInfo = user => dispatch => {
 
 // Country Action Fetch
 export const countryFetch = country => dispatch => {
+  console.log(country);
   const authAxios = axiosWithAuth();
 
   authAxios
@@ -84,6 +85,15 @@ export const createCountry = values => dispatch => {
     .then(respo =>
       dispatch({ type: COUNTRIES_INFO_FETCH, payload: respo.data })
     );
+};
+
+// Create Community
+
+export const createCommunity = (values, community) => dispatch => {
+  const authAxios = axiosWithAuth();
+  authAxios
+    .post(`http://localhost:5000/api/${values}/createcommunity`, community)
+    .then(respo => console.log(respo));
 };
 
 // Edite User

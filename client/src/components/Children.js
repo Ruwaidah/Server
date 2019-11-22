@@ -4,32 +4,30 @@ import { connect } from "react-redux";
 import Child from "../pages/ChildView";
 
 function Children(props) {
-  console.log(props.communities);
   let children = props.communities[props.match.params.id].childs;
-
-  if (props.userAllInfo.usertype)
-    children =
-      props.communities[props.match.params.countryid].communities[
-        props.match.params.id
-      ].childs;
 
   if (!children) return <h1>Loading</h1>;
 
   return (
-    <div className="list-div">
-      <button
-        onClick={event => {
-          event.preventDefault();
-          props.history.goBack();
-        }}
-      >
-        Back
-      </button>
-      <Link to={`/childRecord`}>add Child</Link>
+    <div className="childrens">
       <h2>Children</h2>
-      {children.map(child => (
-        <Child child={child} />
-      ))}
+      <div className="childsbtn">
+        <button
+          onClick={event => {
+            event.preventDefault();
+            props.history.goBack();
+          }}
+        >
+          Back
+        </button>
+
+        <Link to={`/childRecord`}>add Child</Link>
+      </div>
+      <div className="allchilds" id="allch">
+        {children.map(child => (
+          <Child child={child} />
+        ))}
+      </div>
     </div>
   );
 }
